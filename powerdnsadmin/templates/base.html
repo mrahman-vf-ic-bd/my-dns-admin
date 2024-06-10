@@ -50,13 +50,13 @@
     <aside class="main-sidebar sidebar-dark-primary">
         <!-- Logo -->
         <a href="{{ url_for('index.index') }}" class="brand-link">
-            <img src="{{ url_for('static', filename='img/favicon.png') }}" alt="PowerDNS-Admin FavIcon"
+            <img src="{{ url_for('static', filename='img/favicon.png') }}" alt="BCC DNS Admin FavIcon"
                  class="brand-image img-circle elevation-3" style="opacity: .8">
             <span class="brand-text font-weight-light">
         {% if SETTING.get('site_name') %}
             <b>{{ SITE_NAME }}</b>
         {% else %}
-            <b>PowerDNS</b>-Admin
+            <b>BCC DNS</b>-Admin
         {% endif %}
       </span>
         </a>
@@ -147,12 +147,14 @@
                                 <p>Users</p>
                             </a>
                         </li>
+                        {#
                         <li class="{{ 'nav-item active' if active_page == 'admin_keys' else 'nav-item' }}">
                             <a href="{{ url_for('admin.manage_keys') }}" class="nav-link">
                                 <i class="nav-icon fa-solid fa-key"></i>
                                 <p>API Keys</p>
                             </a>
                         </li>
+                        #}
                         <li class="{{ 'nav-item active' if active_page == 'admin_settings' else 'nav-item' }}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fa-solid fa-cog"></i>
@@ -226,9 +228,8 @@
     </div>
     <!-- /.content-wrapper -->
     <footer class="main-footer">
-        <strong><a href="https://github.com/PowerDNS-Admin/PowerDNS-Admin">PowerDNS-Admin</a></strong> - A PowerDNS web
-        interface with advanced features.
-        <span class="float-right">Version 0.4.1</span>
+        <strong><a href="https://ndc.bcc.gov.bd">BCC DNS Admin</a></strong>
+        <span class="float-right">Version 1.0</span>
     </footer>
 </div>
 <!-- ./wrapper -->

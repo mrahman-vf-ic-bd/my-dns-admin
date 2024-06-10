@@ -23,7 +23,7 @@
                 {% if SETTING.get('site_name') %}
                     {{ SITE_NAME }}
                 {% else %}
-                    <b>PowerDNS</b>-Admin
+                    <b>BCC DNS</b>-Admin
                 {% endif %}
             </a>
         </div>
@@ -49,7 +49,7 @@
                                {% if password %}value="{{ password }}" {% endif %}>
                         <span class="help-block with-errors"></span>
                     </div>
-                    {% if SETTING.get('otp_field_enabled') %}
+                    {% if SETTING.get('otp_field_enabled') or otp_user %}
                         <div class="form-group">
                             <input type="otptoken" class="form-control" placeholder="OTP Token" name="otptoken"
                                    autocomplete="off">
@@ -112,6 +112,7 @@
                             Sign in using OpenID Connect
                         </a>
                     {% endif %}
+                    {#
                     {% if SETTING.get('github_oauth_enabled') %}
                         <a href="{{ url_for('index.github_login') }}"
                            class="btn btn-block btn-social btn-github btn-flat">
@@ -133,6 +134,7 @@
                             Sign in using Microsoft Azure
                         </a>
                     {% endif %}
+                    #}
                 </div>
             {% endif %}
             {% if saml_enabled %}
@@ -159,7 +161,7 @@
 </div>
 <!-- /.login-box -->
 <div class="text-center pt-3">
-    <p>Powered by <a href="bcc.gov.bd" target="_blank">DNS-Admin</a></p>
+    <p>Powered by <a href="https://ndc.bcc.gov.bd" target="_blank">NDC Team</a></p>
 </div>
 {% assets "js_login" -%}
     <script type="text/javascript" src="{{ ASSET_URL }}"></script>

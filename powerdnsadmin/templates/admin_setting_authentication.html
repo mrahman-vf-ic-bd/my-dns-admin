@@ -79,6 +79,7 @@
                                                data-bind="click: onTabClick, class: 'nav-link' + (tab_active() == 'ldap' ? ' active' : '')"
                                                href="#" data-toggle="pill" role="tab">LDAP</a>
                                         </li>
+                                        {#
                                         <li class="nav-item">
                                             <a data-tab="google"
                                                data-bind="click: onTabClick, class: 'nav-link' + (tab_active() == 'google' ? ' active' : '')"
@@ -97,6 +98,7 @@
                                                href="#" data-toggle="pill" role="tab">Azure
                                                 OAuth</a>
                                         </li>
+                                        #}
                                         <li class="nav-item">
                                             <a data-tab="oidc"
                                                data-bind="click: onTabClick, class: 'nav-link' + (tab_active() == 'oidc' ? ' active' : '')"
@@ -762,7 +764,7 @@
                                             <!-- /.row -->
                                         </div>
                                         <!-- /.tab-pane -->
-
+                                        {#
                                         <div data-tab="google"
                                              data-bind="class: 'tab-pane' + (tab_active() == 'google' ? ' active' : '')">
                                             <div class="row">
@@ -1312,7 +1314,7 @@
                                             <!-- /.row -->
                                         </div>
                                         <!-- /.tab-pane -->
-
+                                        #}
                                         <div data-tab="oidc"
                                              data-bind="class: 'tab-pane' + (tab_active() == 'oidc' ? ' active' : '')">
                                             <div class="row">

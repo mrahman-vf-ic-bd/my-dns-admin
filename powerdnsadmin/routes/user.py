@@ -42,13 +42,18 @@ def before_request():
 @login_required
 def profile():
     if request.method == 'GET':
-        return render_template('user_profile.html')
+        return render_template('user_profile.html', profile=True)
     if request.method == 'POST':
         if session['authentication_type'] == 'LOCAL':
             firstname = request.form.get('firstname', '').strip()
             lastname = request.form.get('lastname', '').strip()
             email = request.form.get('email', '').strip()
-            new_password = request.form.get('password', '')
+
+            if ('password' in request.form.keys()):
+                if request.form['password'] != request.form['rpassword']:
+                    return render_template('user_profile.html', error_messages={'password': "Password mismatch"})
+                new_password = request.form.get('password', '')
+
         else:
             firstname = lastname = email = new_password = ''
             current_app.logger.warning(
@@ -63,14 +68,17 @@ def profile():
                     enable_otp = data['enable_otp']
                     user = User(username=current_user.username)
                     user.update_profile(enable_otp=enable_otp)
-                    return make_response(
-                        jsonify({
+                    body = render_template('user_profile_auth_qr.html')
+                    res = {
                             'status':
                             'ok',
                             'msg':
                             'Change OTP Authentication successfully. Status: {0}'
-                            .format(enable_otp)
-                        }), 200)
+                            .format(enable_otp),
+                            'body': body
+                    }
+                    return make_response(
+                        jsonify(res), 200)
                 else:
                     return make_response(
                         jsonify({
@@ -78,25 +86,34 @@ def profile():
                             'error',
                             'msg':
                             'User {0} is externally. You are not allowed to update the OTP'
-                            .format(current_user.username)
+                            .format(current_user.username),
+                            'body':""
                         }), 400)
+        
+        if ('password' in request.form.keys()):
+            (password_policy_pass, password_policy) = password_policy_check(current_user.get_user_info_by_username(), new_password)
 
-        (password_policy_pass, password_policy) = password_policy_check(current_user.get_user_info_by_username(), new_password)
-        if not password_policy_pass:
-            if request.data:
-                return make_response(
-                    jsonify({
-                        'status': 'error',
-                        'msg': password_policy['password'],
-                    }), 400)
-            return render_template('user_profile.html', error_messages=password_policy)
-
-        user = User(username=current_user.username,
-                    plain_text_password=new_password,
-                    firstname=firstname,
-                    lastname=lastname,
-                    email=email,
-                    reload_info=False)
+            if not password_policy_pass:
+                if request.data:
+                    return make_response(
+                        jsonify({
+                            'status': 'error',
+                            'msg': password_policy['password'],
+                        }), 400)
+                return render_template('user_profile.html', error_messages=password_policy)
+        if ('password' in request.form.keys()):
+            user = User(username=current_user.username,
+                        plain_text_password=new_password,
+                        firstname=firstname,
+                        lastname=lastname,
+                        email=email,
+                        reload_info=False)
+        else:
+            user = User(username=current_user.username,
+                        firstname=firstname,
+                        lastname=lastname,
+                        email=email,
+                        reload_info=False)
 
         user.update_profile()
 

@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   version: "0.0.14"
-  title: PowerDNS Admin Authoritative HTTP API
+  title: BCC DNS Admin Authoritative HTTP API
   license:
     name: MIT
 host: localhost:80

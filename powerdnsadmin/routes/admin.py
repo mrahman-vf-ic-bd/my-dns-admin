@@ -119,7 +119,7 @@ def extract_changelogs_from_history(histories, record_name=None, record_type=Non
     for entry in histories:
         changes = []
 
-        if "add_rrsets" in entry.detail:
+        if entry.detail and "add_rrsets" in entry.detail:
             details = json.loads(entry.detail)
             if not details['add_rrsets'] and not details['del_rrsets']:
                 continue
@@ -327,8 +327,8 @@ def edit_user(user_username=None):
                                error=result['msg'])
 
 
-@admin_bp.route('/key/edit/<key_id>', methods=['GET', 'POST'])
-@admin_bp.route('/key/edit', methods=['GET', 'POST'])
+# @admin_bp.route('/key/edit/<key_id>', methods=['GET', 'POST'])
+# @admin_bp.route('/key/edit', methods=['GET', 'POST'])
 @login_required
 @operator_role_required
 def edit_key(key_id=None):
@@ -413,7 +413,7 @@ def edit_key(key_id=None):
                                plain_key=plain_key)
 
 
-@admin_bp.route('/manage-keys', methods=['GET', 'POST'])
+# @admin_bp.route('/manage-keys', methods=['GET', 'POST'])
 @login_required
 @operator_role_required
 def manage_keys():

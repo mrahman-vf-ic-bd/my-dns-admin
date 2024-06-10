@@ -11,6 +11,7 @@ from distutils.util import strtobool
 from yaml import Loader, load
 from flask import Blueprint, render_template, make_response, url_for, current_app, g, session, request, redirect, abort
 from flask_login import login_user, logout_user, login_required, current_user
+from sqlalchemy.sql import exists, and_, not_
 
 from .base import captcha, csrf, login_manager
 from ..lib import utils
@@ -392,7 +393,8 @@ def login():
         return authenticate_user(user, 'Azure OAuth')
 
     if 'oidc_token' in session:
-        user_data = json.loads(oidc.get('userinfo').text)
+        res = oidc.get('userinfo')
+        user_data = json.loads(res.text)
         oidc_username = user_data[Setting().get('oidc_oauth_username')]
         oidc_first_name = user_data[Setting().get('oidc_oauth_firstname')]
         oidc_last_name = user_data[Setting().get('oidc_oauth_last_name')]
@@ -458,7 +460,8 @@ def login():
         return authenticate_user(user, 'OIDC OAuth')
 
     if request.method == 'GET':
-        return render_template('login.html', saml_enabled=SAML_ENABLED)
+        user_with_otp=User.query.filter(and_(User.otp_secret.isnot(None),not_(User.otp_secret == ""))).all()
+        return render_template('login.html', saml_enabled=SAML_ENABLED, otp_user=user_with_otp)
     elif request.method == 'POST':
         # process Local-DB authentication
         username = request.form['username']
@@ -654,8 +657,8 @@ def logout():
     oidc_logout = Setting().get('oidc_oauth_logout_url')
 
     if 'oidc_token' in session and oidc_logout:
-        redirect_uri = "{}?redirect_uri={}".format(
-            oidc_logout, url_for('index.login', _external=True))
+        redirect_uri = "{}?post_logout_redirect_uri={}&id_token_hint={}".format(
+            oidc_logout, url_for('index.login', _external=True), session['oidc_token']['id_token'])
 
     # Clean cookies and flask session
     clear_session()
@@ -915,8 +918,8 @@ def resend_confirmation_email():
 
         return render_template('resend_confirmation_email.html', status=status)
 
-
-@index_bp.route('/nic/checkip.html', methods=['GET', 'POST'])
+# Disableing this services
+#@index_bp.route('/nic/checkip.html', methods=['GET', 'POST'])
 @csrf.exempt
 def dyndns_checkip():
     # This route covers the default ddclient 'web' setting for the checkip service
@@ -925,7 +928,8 @@ def dyndns_checkip():
                                'HTTP_X_REAL_IP', request.remote_addr))
 
 
-@index_bp.route('/nic/update', methods=['GET', 'POST'])
+# Currently we are not providing dynamic dns update
+# @index_bp.route('/nic/update', methods=['GET', 'POST'])
 @csrf.exempt
 @dyndns_login_required
 def dyndns_update():
@@ -939,6 +943,7 @@ def dyndns_update():
     # reference: https://help.dyn.com/remote-access-api/return-codes/
     hostname = request.args.get('hostname')
     myip = request.args.get('myip')
+    import pdb; pdb.set_trace()
 
     if not hostname:
         history = History(msg="DynDNS update: missing hostname parameter",
@@ -1306,12 +1311,12 @@ def saml_logout():
 
 ### END SAML AUTHENTICATION ###
 
-
-@index_bp.route('/swagger', methods=['GET'])
+#Disabling all API
+#@index_bp.route('/swagger', methods=['GET'])
 def swagger_spec():
     try:
         spec_path = os.path.join(current_app.root_path, "swagger-spec.yaml")
-        spec = open(spec_path, 'r')
+        spec = open(spec_path, 'r', encoding='utf-8')
         loaded_spec = load(spec.read(), Loader)
     except Exception as e:
         current_app.logger.error(

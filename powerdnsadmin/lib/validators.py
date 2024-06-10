@@ -13,7 +13,7 @@ def validate_apikey(apikey):
 
 
 def get_swagger_spec(spec_path):
-    with open(spec_path, 'r') as spec:
+    with open(spec_path, 'r', encoding='utf-8') as spec:
         return load(spec.read(), Loader)
 
 

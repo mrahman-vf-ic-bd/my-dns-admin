@@ -1,0 +1,44 @@
+{% if current_user.otp_secret %}
+<div id="token_information">
+    <p>
+        <img id="qrcode" src="{{ url_for('user.qrcode') }}">
+    </p>
+    <div style="position: relative; left: 15px">
+        Your secret key is:
+        <br/>
+        <form>
+            <input type=text id="otp_secret"
+                   value={{ current_user.otp_secret }} readonly>
+            <button type=button
+                    style="position:relative; right:28px"
+                    onclick="copy_otp_secret_to_clipboard()">
+                <i class="fa-solid fa-clipboard"></i>
+            </button>
+            <br/>
+            <span style="color: red;" id="copy_tooltip"
+                  style="visibility:collapse">Copied.</span>
+        </form>
+    </div>
+    You can use Google Authenticator
+    (<a target="_blank"
+        href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"><i
+    class="fa-brands fa-google-play"></i>Android</a>
+    - <a target="_blank"
+         href="https://apps.apple.com/us/app/google-authenticator/id388497605"><i
+    class="fa-brands fa-app-store-ios"></i>iOS</a>)
+    or FreeOTP
+    (<a target="_blank"
+        href="https://play.google.com/store/apps/details?id=org.fedorahosted.freeotp&hl=en"><i
+    class="fa-brands fa-google-play"></i>Android</a>
+    - <a target="_blank"
+         href="https://itunes.apple.com/en/app/freeotp-authenticator/id872559395?mt=8"><i
+    class="fa-brands fa-app-store-ios"></i>iOS</a>)
+    on your smartphone to scan the QR code.
+    <br/>
+    <p style="color: red; font-style: italic; font-weight: bold;">
+        Make sure only you can see this QR Code and
+                secret key and
+                nobody can capture them.
+    </p>
+</div>
+{% endif %}
